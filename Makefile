@@ -2,23 +2,21 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-export MASTER1 ?= vmi1053342.contaboserver.net
-export DOMAIN ?= lean-sys.com
+include Makefile.vars
 
 info:
 	printf "\033c"
 	echo 
 	echo 
-	echo " \033[0;32m k3s Cluster and Stack Install\033[0m"
+	echo " \033[0;32mInstall KIE WorkBench and Server on K3S\033[0m"
 	echo 
 	echo "Usage" 
-	echo "	make \033[0;33mset_ssh\033[0m"
-	echo "	make test_ssh"
-	echo "	make test_ansible"
+	echo "	make \033[0;33mssh_set\033[0m"
+	echo "	make \033[0;33mssh_test\033[0m"
+	echo "	make \033[0;33mk3s_config\033[0m"
+	echo "	make \033[0;33mk3s_drools\033[0m"
+	echo "	make \033[0;33mdrools_test\033[0m"
 	echo
-	echo
-
-all : ssh_set ssh_test k3s_config k3s_drools
 
 ssh_set:
 	echo 'StrictHostKeyChecking no' > ~/.ssh/config
@@ -32,15 +30,11 @@ ssh_test:
 	ssh root@${MASTER1} uptime
 
 k3s_config:
-	scp root@${MASTER1}:/etc/rancher/k3s/k3s.yaml _k3s.yaml
-	sudo sed -i 's/127.0.0.1/${MASTER1}/g' _k3s.yaml
-	cat _k3s.yaml | envsubst > k3s.yaml
-	rm _k3s.yaml
-	sudo mv k3s.yaml /etc/k3s.yaml
-	sudo chmod +r /etc/k3s.yaml
 	rm -fr ~/.kube
-	mkdir ~/.kube 
-	cp /etc/k3s.yaml ~/.kube/config
+	mkdir ~/.kube
+	scp root@${MASTER1}:/etc/rancher/k3s/k3s.yaml ~/.kube/config
+	sudo sed -i 's/127.0.0.1/${MASTER1}/g'  ~/.kube/config
+	kubectl get nodes -o=wide
 
 k3s_drools:
 	cat drools.yaml | envsubst '$${DOMAIN}' | kubectl apply -f -

@@ -5,8 +5,8 @@ Kubernetes manifests to install Jboss Drools KIE Business-Central Workbench and 
 
 First, modify Makefile to apply to your environment :
 ```bash
-export MASTER1 ?= vmi1053342.contaboserver.net
-export DOMAIN ?= lean-sys.com
+export MASTER1 ?= <your k3s cluster server ip or fqdn name> 
+export DOMAIN ?= <your domain name>
 ```
 
 Then, set your environment :
@@ -16,7 +16,9 @@ make ssh_test
 make k3s_config
 ```
 
-Then, install KIE WorkBench & Server :
+Then, install KIE WorkBench & Server,
+the url for your WB will be https://kie-wb.drools.<your domain name>
+the url for your Server will be https://kie-server.drools.<your domain name>
 ```bash
 make k3s_drools 
 ```
