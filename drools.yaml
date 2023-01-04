@@ -1,9 +1,15 @@
 ---
+#
+# Namespace
+#
 apiVersion: v1
 kind: Namespace
 metadata:
   name: drools
 ---
+#
+# KIE WorkBench Deployment
+#
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,6 +31,9 @@ spec:
           ports:
             - containerPort: 8080
 ---
+#
+# KIE WorkBench Service
+#
 kind: Service
 apiVersion: v1
 metadata:
@@ -41,6 +50,9 @@ spec:
       port: 8001
       targetPort: 8001
 ---
+#
+# KIE Server Deployment
+#
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -62,11 +74,18 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: KIE_SERVER_ID: sample-server
-            - name: KIE_SERVER_LOCATION: http://kie.drools.${DOMAIN}/kie-server/services/rest/server
-            - name: KIE_SERVER_CONTROLLER: http://wb.drools.${DOMAIN}/business-central/rest/controller
-            - name: KIE_MAVEN_REPO: http://kie.drools.${DOMAIN}/business-central/maven2
+            - name: KIE_SERVER_ID
+              value: kie-server.drools.${DOMAIN}
+            - name: KIE_SERVER_LOCATION
+              value: https://kie-server.drools.${DOMAIN}/kie-server/services/rest/server
+            - name: KIE_SERVER_CONTROLLER
+              value: https://kie-wb.drools.${DOMAIN}/business-central/rest/controller
+            - name: KIE_MAVEN_REPO
+              value: https://kie-wb.drools.${DOMAIN}/business-central/maven2
 ---
+#
+# KIE Server Service
+#
 kind: Service
 apiVersion: v1
 metadata:
@@ -81,7 +100,7 @@ spec:
       targetPort: 8080
 ---
 #
-# Drools Ingress
+# KIE WorkBench Ingress
 #
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -91,9 +110,10 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
   rules:
-  - host: wb.drools.${DOMAIN}
+  - host: kie-wb.drools.${DOMAIN}
     http:
       paths:
       - path: /
@@ -106,10 +126,10 @@ spec:
   tls:
     - secretName: kie-wb-tls
       hosts:
-        - wb.drools.${DOMAIN}
+        - kie-wb.drools.${DOMAIN}
 ---
 #
-# Drools Ingress
+# KIE Server Ingress
 #
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -119,9 +139,10 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
   rules:
-  - host: kie.drools.${DOMAIN}
+  - host: kie-server.drools.${DOMAIN}
     http:
       paths:
       - path: /
@@ -134,4 +155,4 @@ spec:
   tls:
     - secretName: kie-server-tls
       hosts:
-        - kie.drools.${DOMAIN}
+        - kie-server.drools.${DOMAIN}
