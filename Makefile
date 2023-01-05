@@ -14,8 +14,9 @@ info:
 	echo "	make \033[0;33mssh_set\033[0m"
 	echo "	make \033[0;33mssh_test\033[0m"
 	echo "	make \033[0;33mk3s_config\033[0m"
-	echo "	make \033[0;33mk3s_drools\033[0m"
-	echo "	make \033[0;33mdrools_test\033[0m"
+	echo "	make \033[0;33mk3s_drools_install\033[0m"
+	echo "	make \033[0;33mk3s_drools_uninstall\033[0m"
+	echo "	make \033[0;33mk3s_drools_test\033[0m"
 	echo
 
 ssh_set:
@@ -36,14 +37,14 @@ k3s_config:
 	sudo sed -i 's/127.0.0.1/${MASTER1}/g'  ~/.kube/config
 	kubectl get nodes -o=wide
 
-k3s_drools:
+k3s_drools_install:
 	cat drools.yaml | envsubst '$${DOMAIN}' | kubectl apply -f -
 
-drools_test:
-	echo "List DMN"
-	curl -u 'kieserver:kieserver1!' -H "accept: application/json" -X GET "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn"
+k3s_drools_uninstall:
+	cat drools.yaml | envsubst '$${DOMAIN}' | kubectl delete -f -
+
+k3s_drools_test:
 	echo
-	echo "Execute Model"
-	curl -u 'kieserver:kieserver1!' -H "accept: application/json" -H "content-type: application/json" -X POST "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn" -d "{ \"model-namespace\" : \"https://kiegroup.org/dmn/_03DAAFDA-EF0E-492C-A752-7946B9646137\", \"model-name\" : \"Traffic Violation\", \"dmn-context\" : {\"Driver\" : {\"Points\" : 10}, \"Violation\" : {\"Type\" : \"speed\", \"Actual Speed\" : 135, \"Speed Limit\" : 100}}}"
-	echo
-	
+	curl -s -u 'kieserver:kieserver1!' https://kie-server.drools.lean-sys.com/kie-server/services/rest/server
+	echo "Result"
+	curl -s -u 'kieserver:kieserver1!' -d " {\"Driver\" : {\"Points\" : 10}, \"Violation\" : {\"Type\" : \"speed\", \"Actual Speed\" : 135, \"Speed Limit\" : 100}}" -H "accept: application/json" -H "content-type: application/json" -X POST "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn/models/Traffic Violation" | jq .
