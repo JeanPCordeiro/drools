@@ -44,7 +44,9 @@ k3s_drools_uninstall:
 	cat drools.yaml | envsubst '$${DOMAIN}' | kubectl delete -f -
 
 k3s_drools_test:
-	echo
-	curl -s -u 'kieserver:kieserver1!' https://kie-server.drools.lean-sys.com/kie-server/services/rest/server
-	echo "Result"
-	curl -s -u 'kieserver:kieserver1!' -d " {\"Driver\" : {\"Points\" : 10}, \"Violation\" : {\"Type\" : \"speed\", \"Actual Speed\" : 135, \"Speed Limit\" : 100}}" -H "accept: application/json" -H "content-type: application/json" -X POST "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn/models/Traffic Violation" | jq .
+#	curl -s -u 'kieserver:kieserver1!' https://kie-server.drools.lean-sys.com/kie-server/services/rest/server
+#	echo "Result"
+#	curl -s -u 'kieserver:kieserver1!' -d " {\"Driver\" : {\"Points\" : 10}, \"Violation\" : {\"Type\" : \"speed\", \"Actual Speed\" : 135, \"Speed Limit\" : 100}}" -H "accept: application/json" -H "content-type: application/json" -X POST "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/traffic-violation_1.0.0-SNAPSHOT/dmn/models/Traffic Violation" | jq .
+#	echo "Result"
+	curl -s -u 'kieserver:kieserver1!' -d " {\"Conducteur\" : {\"Points\" : 2}, \"Infraction\" : {\"Type\" : \"Vitesse\", \"Vitesse\" : 125, \"Vitesse_Limite\" : 100}}" -H "accept: application/json" -H "content-type: application/json" -X POST "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/Permis_Conduire_1.0.0-SNAPSHOT/dmn/models/Regles_Permis_Conduire" | jq .
+	curl -s -u 'kieserver:kieserver1!' -d " {\"Conducteur\" : {\"Points\" : 2}, \"Infraction\" : {\"Type\" : \"Stationnement\"}}" -H "accept: application/json" -H "content-type: application/json" -X POST "https://kie-server.drools.lean-sys.com/kie-server/services/rest/server/containers/Permis_Conduire_1.0.0-SNAPSHOT/dmn/models/Regles_Permis_Conduire" | jq .
