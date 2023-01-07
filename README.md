@@ -17,8 +17,9 @@ make k3s_config
 ```
 
 Then, install KIE WorkBench & Server,
-the url for your WB will be https://kie-wb.drools.<your domain name>
-the url for your Server will be https://kie-server.drools.<your domain name>
+the url for your WB will be https://kie-wb.drools."<your domain name>"
+
+the url for your Server will be https://kie-server.drools."<your domain name>"
 ```bash
 make k3s_drools 
 ```
