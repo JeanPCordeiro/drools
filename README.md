@@ -3,7 +3,7 @@ Kubernetes manifests to install Jboss Drools KIE Business-Central Workbench and 
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/from-referrer/)
 
-First, modify Makefile to apply to your environment :
+First, modify Makefile.vars to apply to your environment :
 ```bash
 export MASTER1 ?= <your k3s cluster server ip or fqdn name> 
 export DOMAIN ?= <your domain name>
