@@ -21,10 +21,10 @@ the url for your WB will be https://kie-wb.drools.${DOMAIN}
 
 the url for your Server will be https://kie-server.drools.${DOMAIN}
 ```bash
-make k3s_drools 
+make k3s_drools_install 
 ```
 
 Configure, buil and deploy your model and test it :
 ```bash
-make drools_test
+make k3s_drools_test
 ```
