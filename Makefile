@@ -8,7 +8,7 @@ info:
 	printf "\033c"
 	echo 
 	echo 
-	echo " \033[0;32mInstall KIE WorkBench and Server on K3S\033[0m"
+	echo " \033[0;32mInstall KIE WorkBench and Server on K3S Kubernetes\033[0m"
 	echo 
 	echo "Usage" 
 	echo "	make \033[0;33mssh_set\033[0m"
